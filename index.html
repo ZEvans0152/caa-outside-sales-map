@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Outside Sales Rep Visit Map</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  html, body { margin:0; padding:0; height:100%; font-family: Arial, sans-serif; }
+  #map { position:absolute; top:56px; bottom:0; left:0; right:0; }
+  #header { height:56px; display:flex; align-items:center; padding:0 16px; background:#1f2937; color:#fff; font-size:15px; gap:16px; }
+  #legend { display:flex; gap:14px; flex-wrap:wrap; }
+  .legend-item { display:flex; align-items:center; gap:6px; font-size:13px; }
+  .dot { width:12px; height:12px; border-radius:50%; display:inline-block; }
+  .popup-dealers { margin:4px 0 0; padding-left:18px; max-height:160px; overflow-y:auto; }
+</style>
+</head>
+<body>
+<div id="header">
+  <b>Outside Sales Visits &mdash; Jun 29 - Jul 5, 2026</b>
+  <div id="legend"></div>
+</div>
+<div id="map"></div>
+<script>
+const points = [{"rep":"Chris Carlson","lat":34.4353,"lon":-83.1071,"n":1,"city":"LAVONIA","state":"GA","dealers":["ED MURDOCK SUPERSTORES INC"]},{"rep":"Chris Carlson","lat":34.5203,"lon":-83.2555,"n":1,"city":"EASTANOLLEE","state":"GA","dealers":["Thomas Auto Sales"]},{"rep":"Chris Carlson","lat":34.5774,"lon":-83.3329,"n":1,"city":"TOCCOA","state":"GA","dealers":["TOCCOA AUTO MALL LLC"]},{"rep":"Chris Carlson","lat":34.3462,"lon":-83.1099,"n":1,"city":"CANON","state":"GA","dealers":["DV MOTORS"]},{"rep":"Daequan Rucker","lat":35.1485,"lon":-81.8609,"n":5,"city":"CHESNEE","state":"SC","dealers":["BLACKWELLS USED CARS","CAROLINA ELITE AUTO LLC","CARS ETC LLC","ROBINSON USED CARS LLC","MAYO AUTO SALES"]},{"rep":"Daequan Rucker","lat":34.9379,"lon":-82.1451,"n":2,"city":"DUNCAN","state":"SC","dealers":["Lighthouse Auto Sales","MCCREA AUTO SALES LLC"]},{"rep":"Daequan Rucker","lat":34.9854,"lon":-80.5495,"n":5,"city":"MONROE","state":"NC","dealers":["CAROLINAS AUTO EXPO","Carvita","MONROE TRUCK REPAIR INC","TRAYWICK MOTOR CO OF MONROE","POWER ON AUTO LLC"]},{"rep":"Daequan Rucker","lat":35.3337,"lon":-81.8649,"n":3,"city":"FOREST CITY","state":"NC","dealers":["CAROLINA AUTO FINANCE","FRIENDSHIP CHEVROLET BUICK GMC","SOUTHSIDE MOTOR CO INC"]},{"rep":"Daequan Rucker","lat":35.3693,"lon":-81.9568,"n":1,"city":"RUTHERFORDTON","state":"NC","dealers":["STS AUTO SALES"]},{"rep":"Daequan Rucker","lat":35.2623,"lon":-81.1838,"n":3,"city":"GASTONIA","state":"NC","dealers":["N'S & OUT AUTOMOTIVE","REAL STEAL AUTO SALES & REPAIR INC","DRIVETIME"]},{"rep":"Daequan Rucker","lat":35.2388,"lon":-81.0751,"n":1,"city":"CRAMERTON","state":"NC","dealers":["QUEEN CITY AUTO MALL"]},{"rep":"Daequan Rucker","lat":35.2679,"lon":-81.1029,"n":1,"city":"LOWELL","state":"NC","dealers":["KENNYS AUTO SALES INC"]},{"rep":"David Huskins","lat":35.3187,"lon":-82.461,"n":8,"city":"HENDERSONVILLE","state":"NC","dealers":["PRYOR AUTO SALES LLC","COLEMAN FREEMAN AUTO SALES INC","BRYAN EASLER TOYOTA","CAN DO AUTO SALES","BOYD AUTOMOTIVE","AUTO ALLEY","1ST CHOICE AUTO CENTER","APPLE CARS LLC"]},{"rep":"David Huskins","lat":35.3884,"lon":-82.5668,"n":1,"city":"MILLS RIVER","state":"NC","dealers":["APPALACHIAN AUTO BROKERS"]},{"rep":"David Huskins","lat":35.4309,"lon":-82.5011,"n":1,"city":"FLETCHER","state":"NC","dealers":["HUNTER SUBARU"]},{"rep":"David Huskins","lat":34.8514,"lon":-82.3985,"n":19,"city":"GREENVILLE","state":"SC","dealers":["THE BROTHERS AUTO LLC LOT 2","BICES AUTO SALES LLC","FAMILY AUTO OF GREENVILLE","LAND ROVER GREENVILLE","PORSCHE GREENVILLE","LAND ROVER GREENVILLE","STEVE WHITE MOTORS OF SC INC","Fairway Ford Inc.","PRESTIGIOUS MOTOR CARS LLC","ROYALTY AUTO CREDIT LLC","J D BYRIDER OF GREENVILLE","VP AUTO LLC","OR AUTO SALES & SERVICE LLC","PRECISION AUTO DEALER LLC","HOMETOWN CARS AND TRUCKS LLC","WHOLESALE DIRECT LLC","FAMILY AUTO OF GREENVILLE","ABU AUTO SALES & LEASING HWY 123","HYUNDAI OF GREENVILLE"]},{"rep":"David Huskins","lat":34.8269,"lon":-82.5817,"n":10,"city":"EASLEY","state":"SC","dealers":["THE TRUCK FARM OF EASLEY","DYNASTY AUTO GROUP LLC","PM AUTOSALES LLC","FORZA MOTORS LLC","MCALISTER USED CARS","PINNACLE AUTO LLC","BENSON FORD INC","BENSON NISSAN","HENDRICK HONDA EASLEY","THE TRUCK FARM OF EASLEY"]},{"rep":"David Huskins","lat":34.9138,"lon":-82.2927,"n":1,"city":"TAYLORS","state":"SC","dealers":["FAMILY AUTO OF TAYLORS LLC"]},{"rep":"Jaime Sloan","lat":34.6925,"lon":-82.1988,"n":4,"city":"FOUNTAIN INN","state":"SC","dealers":["HENSLEY AUTO SALES","A ONE AUTO BROKERS","TOP NOTCH AUTO SALES","FARMHOUSE AUTO SALES, LLC"]},{"rep":"Jaime Sloan","lat":34.8514,"lon":-82.3985,"n":10,"city":"Greenville","state":"South Carolina","dealers":["FAMILY AUTO OF GREENVILLE","J D BYRIDER OF GREENVILLE","EXCLUSIVE MOTORCARS LLC","LAND ROVER GREENVILLE","LAND ROVER GREENVILLE","STEVE WHITE MOTORS OF SC INC","FRED ANDERSON HONDA","Fairway Ford Inc.","THE BROTHERS AUTO LLC LOT 2","Fairway Ford Inc."]},{"rep":"Jaime Sloan","lat":34.9676,"lon":-82.4435,"n":1,"city":"TRAVELERS REST","state":"SC","dealers":["10X AUTOPLEX LLC"]},{"rep":"Jaime Sloan","lat":34.8269,"lon":-82.5817,"n":2,"city":"EASLEY","state":"SC","dealers":["THE TRUCK FARM OF EASLEY","DYNASTY AUTO GROUP LLC"]},{"rep":"Jaime Sloan","lat":34.5258,"lon":-82.653,"n":6,"city":"ANDERSON","state":"SC","dealers":["A & D AUTO SALES","CNK INVESTMENTS LLC","ANDERSON AUTO ACCEPTANCE LLC","UPSTATE AUTO","NYH MOTORS LLC","KUSTOM RIDEZ LLC"]},{"rep":"Jaime Sloan","lat":34.6508,"lon":-82.7821,"n":2,"city":"pendleton","state":"South Carolina","dealers":["FAMILY AUTO SALES OF ANDERSON","FAMILY AUTO SALES OF ANDERSON"]},{"rep":"Scott Batson","lat":34.5258,"lon":-82.653,"n":4,"city":"ANDERSON","state":"SC","dealers":["PIEDMONT HONDA","RALPH HAYES TOYOTA","Richard Kay Automotive","HYUNDAI OF ANDERSON"]},{"rep":"Scott Batson","lat":34.3065,"lon":-82.6637,"n":2,"city":"IVA","state":"SC","dealers":["FIRST QUALITY AUTO SALES, LLC,","TEDDYS AUTO SALES"]},{"rep":"Scott Batson","lat":34.6423,"lon":-82.456,"n":1,"city":"PELZER","state":"SC","dealers":["MEGO AUTO SALES"]}];
+const repColors = {"David Huskins":"#e6194b","Chris Carlson":"#3cb44b","Scott Batson":"#4363d8","Jaime Sloan":"#f58231","Daequan Rucker":"#911eb4"};
+
+const legend = document.getElementById('legend');
+Object.keys(repColors).forEach(rep => {
+  const item = document.createElement('div');
+  item.className = 'legend-item';
+  item.innerHTML = '<span class="dot" style="background:' + repColors[rep] + '"></span>' + rep;
+  legend.appendChild(item);
+});
+
+const map = L.map('map').setView([34.89417407407407, -82.30283333333334], 7);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+  maxZoom: 19
+}).addTo(map);
+
+const repLayers = {};
+Object.keys(repColors).forEach(rep => { repLayers[rep] = L.layerGroup().addTo(map); });
+
+points.forEach(p => {
+  const color = repColors[p.rep] || '#666';
+  const radius = 6 + Math.min(p.n, 15);
+  const dealerList = p.dealers.map(d => '<li>' + d + '</li>').join('');
+  const popupHtml = '<b>' + p.rep + '</b><br>' + p.city + ', ' + p.state +
+    '<br><b>' + p.n + ' visit' + (p.n > 1 ? 's' : '') + '</b>' +
+    '<ul class="popup-dealers">' + dealerList + '</ul>';
+  const marker = L.circleMarker([p.lat, p.lon], {
+    radius: radius, color: color, fillColor: color, fillOpacity: 0.75, weight: 1
+  }).bindPopup(popupHtml, {maxWidth: 280});
+  marker.addTo(repLayers[p.rep]);
+});
+
+L.control.layers(null, repLayers, {collapsed: false}).addTo(map);
+</script>
+</body>
+</html>
